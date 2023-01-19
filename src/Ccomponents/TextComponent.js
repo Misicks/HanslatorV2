@@ -1,7 +1,12 @@
-import * as React from 'react';
+import * as React from "react";
+import Box from "@mui/material/Box";
 
 function TextComponent() {
-  return <div class='border border-cyan-500'>Text</div>;
+  return (
+    <Box component="span" sx={{ display: "block" }}>
+      Sign Language Translation
+    </Box>
+  );
 }
 
 export default TextComponent;
