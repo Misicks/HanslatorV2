@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import MainFrame from './Ccomponents/MainFrame';
+import MainFrame from './Components/MainFrame';
 
 function App() {
   return (

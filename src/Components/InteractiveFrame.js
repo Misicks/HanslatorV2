@@ -2,7 +2,7 @@ import * as React from 'react';
 import CameraFrame from './CameraFrame';
 import TextComponent from './TextComponent';
 import Button from '@mui/material/Button';
-import CVCamera from 'CVCamera.js';
+import CVCamera from './CVCamera.js';
 
 function InteractiveFrame(props) {
   const [isPaused, setPaused] = React.useState(false);
