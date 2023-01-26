@@ -1,11 +1,14 @@
-from flask import Flask, render_template, Response
+from flask import Flask, request, jsonify, render_template, Response
 from flask_cors import CORS
-
+from flask_socketio import SocketIO, emit
+import cv2
 from camera import VideoCamera
 
 
 app = Flask(__name__)
-CORS(app)
+app.config['SECRET_KEY'] = 'secret!'
+CORS(app, resources={r"/*": {"origins": "*"}})
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @app.route('/')
@@ -20,13 +23,6 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
-def genText(camera):
-    while True:
-        text = camera.translate()
-        yield (b'--text\r\n'
-               b'Content-Type: text\r\n\r\n' + text + b'\r\n\r\n')
-
-
 @app.route('/video_feed')
 def video_feed():
     return Response(gen(VideoCamera()),
@@ -35,9 +31,29 @@ def video_feed():
 
 @app.route('/translate')
 def translate():
-    response = {"text": VideoCamera().translate()}
-    return response
+    response = {"text": VideoCamera().translate(), "HELLO": "WORLD"}
+    return jsonify(response)
+
+
+@socketio.on("translate")
+def connected():
+    """event listener when client connects to the server"""
+    print(request.sid)
+    print("language translation on")
+    VideoCamera().translate() 
+    # while True:
+    #     print("HELLO WORLD")
+    #     emit("data", {'data': VideoCamera().translate(),
+    #          'id': request.sid}, broadcast=True)
+
+
+# @socketio.on("disconnect")
+# def disconnected():
+#     """event listener when client connects to the server"""
+#     print(request.sid)
+#     print("turn off camera")
+#     VideoCamera().video.closed()
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, threaded=True, use_reloader=False)
+    socketio.run(app, debug=True, port=5000)

@@ -6,6 +6,7 @@ import time
 import mediapipe as mp
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
+from flask_socketio import SocketIO, emit
 
 
 class VideoCamera(object):
@@ -129,7 +130,7 @@ class VideoCamera(object):
         cap = self.video
         # Set mediapipe model
         with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-            if cap.isOpened():
+            while cap.isOpened():
 
                 # Read feed
                 ret, frame = cap.read()
@@ -137,10 +138,9 @@ class VideoCamera(object):
                 # Make detections
                 image, results = mediapipe_detection(frame, holistic)
                 # print(results)
-
-                res = str(results)
+                emit("data", {'data': str(results)}, broadcast=True)
+                # res = str(results)
+                # print("res", res)
                 erase = "<class 'mediapipe.python.solution_base.SolutionOutputs'>"
-                if res == erase:
-                    return ''
-                else:
-                    return res
+                # if res != erase:
+                #     return res

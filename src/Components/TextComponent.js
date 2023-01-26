@@ -7,8 +7,12 @@ function TextComponent() {
   useEffect(() => {
     let interval = setInterval(async () => {
       const res = await fetch(`http://localhost:5000/translate`);
-      console.log(res);
-    }, 2000);
+      res.json().then((data) => {
+        console.log(data);
+        console.log(data.text);
+        setText(data.text);
+      });
+    }, 1000);
     return () => {
       clearInterval(interval);
     };
@@ -16,6 +20,7 @@ function TextComponent() {
 
   return (
     <Box component='span' sx={{ display: 'block' }}>
+      <h1>Translated text</h1>
       {text}
     </Box>
   );
