@@ -29,30 +29,20 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/translate')
-def translate():
-    response = {"text": VideoCamera().translate(), "HELLO": "WORLD"}
-    return jsonify(response)
-
-
 @socketio.on("translate")
 def connected():
     """event listener when client connects to the server"""
     print(request.sid)
     print("language translation on")
-    VideoCamera().translate() 
-    # while True:
-    #     print("HELLO WORLD")
-    #     emit("data", {'data': VideoCamera().translate(),
-    #          'id': request.sid}, broadcast=True)
+    VideoCamera().translate()
 
 
-# @socketio.on("disconnect")
-# def disconnected():
-#     """event listener when client connects to the server"""
-#     print(request.sid)
-#     print("turn off camera")
-#     VideoCamera().video.closed()
+@socketio.on("paused")
+def paused():
+    """event listener when client connects to the server"""
+    print(request.sid)
+    print("turn off camera")
+    VideoCamera().pause()
 
 
 if __name__ == '__main__':

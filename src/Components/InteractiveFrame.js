@@ -1,51 +1,48 @@
-import * as React from 'react';
-import CameraFrame from './CameraFrame';
-import TextComponent from './TextComponent';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import CVCamera from './CVCamera.js';
 import { io } from 'socket.io-client';
 import Box from '@mui/material/Box';
 
 function InteractiveFrame(props) {
-  const [isPaused, setPaused] = React.useState(false);
-  const [text, setText] = React.useState('');
+  const [isPaused, setPaused] = useState(false);
+  const [texts, setTexts] = useState([]);
 
   const handlePause = () => {
     setPaused(!isPaused);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const socket = io('localhost:5000/', {
+      transports: ['polling'],
+      cors: {
+        origin: 'http://localhost:3000/',
+      },
+    });
+
     if (isPaused === false) {
-      const socket = io('localhost:5000/', {
-        transports: ['polling'],
-        cors: {
-          origin: 'http://localhost:3000/',
-        },
-      });
-
-      console.log('socket created');
-
       socket.emit('translate');
 
       socket.on('data', (data) => {
-        console.log(data);
-        console.log(data.data);
-        setText(data.data);
+        let newTexts = [...texts, data.data];
+        setTexts(newTexts);
       });
 
       return function cleanup() {
         socket.disconnect();
       };
+    } else {
+      socket.emit('paused');
     }
-  }, [isPaused]);
+  }, [isPaused, texts]);
 
   return (
     <div>
       <div class='flex justify-evenly w-screen'>
-        <CVCamera />
+        <CVCamera isPaused={isPaused} />
         <Box component='span' sx={{ display: 'block' }}>
           <h1>Translated text</h1>
-          {text}
+          {texts.join(' ')}
         </Box>
       </div>
 

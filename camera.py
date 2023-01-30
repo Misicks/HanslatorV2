@@ -13,7 +13,7 @@ class VideoCamera(object):
     def __init__(self):
         self.video = cv2.VideoCapture(0)
 
-    def __del__(self):
+    def pause(self):
         self.video.release()
 
     def get_frame(self):
@@ -137,10 +137,12 @@ class VideoCamera(object):
 
                 # Make detections
                 image, results = mediapipe_detection(frame, holistic)
-                # print(results)
-                emit("data", {'data': str(results)}, broadcast=True)
-                # res = str(results)
-                # print("res", res)
-                erase = "<class 'mediapipe.python.solution_base.SolutionOutputs'>"
-                # if res != erase:
-                #     return res
+
+                keypoints = extract_keypoints(results)
+                sequence.append(keypoints)
+                sequence = sequence[-30:]
+
+                if len(sequence) == 30:
+                    res = model.predict(np.expand_dims(sequence, axis=0))[0]
+                    toEmit = actions[np.argmax(res)]
+                    emit("data", {'data': str(toEmit)}, broadcast=True)
