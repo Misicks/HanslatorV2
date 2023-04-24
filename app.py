@@ -25,8 +25,7 @@ def gen(camera):
 
 @app.route('/api/video_feed')
 def video_feed():
-    return Response(gen(VideoCamera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @socketio.on("translate")

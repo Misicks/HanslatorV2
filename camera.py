@@ -146,15 +146,15 @@ class VideoCamera(object):
                     res = model.predict(np.expand_dims(sequence, axis=0))[0]
                     toEmit = actions[np.argmax(res)]
 
-            if res[np.argmax(res)] > threshold: 
-                if len(sentence) > 0: 
-                    if actions[np.argmax(res)] != sentence[-1]:
-                        sentence.append(actions[np.argmax(res)])
-                        emit("data", {'data': str(toEmit)}, broadcast=True)
+                    if res[np.argmax(res)] > threshold: 
+                        if len(sentence) > 0: 
+                            if actions[np.argmax(res)] != sentence[-1]:
+                                sentence.append(actions[np.argmax(res)])
+                                emit("data", {'data': str(sentence[-1])}, broadcast=True)
 
-                else:
-                    sentence.append(actions[np.argmax(res)])
-                    emit("data", {'data': str(toEmit)}, broadcast=True)
+                    else:
+                        sentence.append(actions[np.argmax(res)])
+                        emit("data", {'data': str(sentence[-1])}, broadcast=True)
 
 
             if len(sentence) > 5: 

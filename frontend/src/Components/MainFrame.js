@@ -10,7 +10,7 @@ function MainFrame() {
   };
 
   return (
-    <div class='grid h-screen place-items-center'>
+    <div className='grid h-screen place-items-center'>
       {!isClicked ? (
         <Button variant='contained' type='button' onClick={handleClick}>
           Start
