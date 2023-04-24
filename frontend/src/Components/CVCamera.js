@@ -5,7 +5,7 @@ const Cam = (props) => {
       {props.isPaused ? (
         <div>Video Paused</div>
       ) : (
-        <img src='http://localhost:5000/video_feed' alt='Video' />
+        <img src='http://localhost:5000/api/video_feed' alt='Video' />
       )}
     </div>
   );
