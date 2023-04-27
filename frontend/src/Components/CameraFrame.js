@@ -1,5 +1,5 @@
-import * as React from "react";
-import Webcam from "react-webcam";
+import * as React from 'react';
+import Webcam from 'react-webcam';
 
 function CameraFrame(props) {
   const [webcamUrl, setWebcamUrl] = React.useState(null);
@@ -9,7 +9,7 @@ function CameraFrame(props) {
   };
 
   return (
-    <div class="box-content h-96 w-96 rounded-lg">
+    <div class='box-content h-96 w-96 rounded-lg'>
       {props.isPaused ? (
         <div>Video Paused</div>
       ) : (
